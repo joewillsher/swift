@@ -42,7 +42,7 @@ class Base<T> {
     second = x
   }
   func present() {
-    print("\(self.dynamicType) \(T.self) \(first) \(second)")
+    print("\(Self.self) \(T.self) \(first) \(second)")
   }
 }
 class SuperDerived: Derived {

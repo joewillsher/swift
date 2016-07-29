@@ -1513,11 +1513,13 @@ class DynamicTypeBase {
   var x: Int
 
   init() {
+    use(Self.self)
     use(self.dynamicType)
     x = 0
   }
 
   convenience init(a : Int) {
+    use(Self.self)
     use(self.dynamicType)
     self.init()
   }
@@ -1525,11 +1527,13 @@ class DynamicTypeBase {
 
 class DynamicTypeDerived : DynamicTypeBase {
   override init() {
+    use(Self.self)
     use(self.dynamicType)
     super.init()
   }
 
   convenience init(a : Int) {
+    use(Self.self)
     use(self.dynamicType)
     self.init()
   }
@@ -1539,11 +1543,13 @@ struct DynamicTypeStruct {
   var x: Int
 
   init() {
+    use(Self.self)
     use(self.dynamicType)
     x = 0
   }
 
   init(a : Int) {
+    use(Self.self)
     use(self.dynamicType)
     self.init()
   }

@@ -2569,7 +2569,7 @@ ERROR(array_literal_intrinsics_not_found,none,
 ERROR(bool_intrinsics_not_found,none,
       "broken standard library: cannot find intrinsic operations on Bool", ())
 ERROR(self_outside_nominal,none,
-      "'Self' is only available in a type", ())
+      "'Self' is only available within a type", ())
 ERROR(class_super_access,none,
       "class %select{must be declared "
       "%select{private|fileprivate|internal|PUBLIC}2"

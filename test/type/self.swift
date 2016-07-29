@@ -71,8 +71,33 @@ func testProto() {
   let _: Conf = p0.copy()
 }
 
-let _: Self = () // expected-error{{'Self' is only available in a type}}
+let _: Self = () // expected-error{{'Self' is only available within a type}}
 func noParent() -> Self { fatalError() } // expected-error{{global function cannot return 'Self'}}
 
-_ = Self.self // expected-error {{'Self' is only available in a type}}
+_ = Self.self // expected-error {{'Self' is only available within a type}}
+
+
+// Generic dynamic 'Self'
+class C2<T> {
+  
+  var a: T
+  init(_ a: T) { self.a = a }
+  
+  func foo() {
+    _ = Self.self as Self.Type
+  }
+  func bar() -> Self {
+    return self
+  }
+  class func foo1() {
+    _ = Self.self
+    _ = Self.self as Self
+  }
+  class func foo2() -> Self<Int> {
+    _ = Self.self
+    _ = Self.self as Self
+    return Self(1)
+  }
+}
+
 

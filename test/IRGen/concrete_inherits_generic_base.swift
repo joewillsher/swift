@@ -15,7 +15,7 @@ class Base<T> {
   }
 
   func present() {
-    print("\(self.dynamicType) \(T.self) \(first) \(second)")
+    print("\(Self.self) \(T.self) \(first) \(second)")
   }
 }
 

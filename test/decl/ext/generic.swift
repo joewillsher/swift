@@ -137,7 +137,7 @@ extension Array where Element == String { } // expected-error{{same-type require
 
 extension GenericClass : P3 where T : P3 { } // expected-error{{extension of type 'GenericClass' with constraints cannot have an inheritance clause}}
 
-extension GenericClass where Self : P3 { } // expected-error{{type 'GenericClass<T>' in conformance requirement does not refer to a generic parameter or associated type}}
+extension GenericClass where Self : P3 { } // expected-error{{type 'Self' in conformance requirement does not refer to a generic parameter or associated type}}
 
 protocol P4 {
   associatedtype T

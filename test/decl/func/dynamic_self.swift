@@ -68,11 +68,9 @@ class C1 {
     if b { return C1(int: 5) } // expected-error{{cannot convert return expression of type 'C1' to return type 'Self'}}
 
     // One can use .dynamicType to attempt to construct an object of type Self.
-    if !b { return self.dynamicType.init(int: 5) }
+    if !b { return Self(int: 5) }
 
-    // Can't utter Self within the body of a method.
     var _: Self = self
-
     // Okay to return 'self', because it has the appropriate type.
     return self // okay
   }
@@ -82,13 +80,40 @@ class C1 {
     // Check directly.
     var _: Int = self // expected-error{{cannot convert value of type 'Self.Type' to specified type 'Int'}}
 
-    _ = C1(int: 5) as Self
+    _ = Self(int: 5) as Self
+    _ = C1(int: 5) as Self // expected-warning{{'C1' is not convertible to 'Self'; did you mean to use 'as!' to force downcast?}}
 
     if b { return self.init(int: 5) }
 
-    return Self() // expected-error{{missing argument for parameter 'int' in call}}
+    return Self(int: 5)
+  }
+  class func uses() {
+    _ = Self.self
   }
 }
+struct S1 {
+  init(int i: Int) {}
+  
+  // Instance methods have a self of type Self.
+  func f(_ b: Bool) -> Self {
+    if b { return S1(int: 5) }
+    if !b { return Self(int: 5) }
+    var _: Self = self
+    // Okay to return 'self', because it has the appropriate type.
+    return self // okay
+  }
+  // Type methods have a self of type Self.Type.
+  static func factory(_ b: Bool) -> Self {
+    // Check directly.
+    var _: Int = self // expected-error{{cannot convert value of type 'S1.Type' to specified type 'Int'}}
+    
+    _ = Self(int: 5) as Self
+    _ = S1(int: 5) as Self
+    if b { return self.init(int: 5) }
+    return Self(int: 5)
+  }
+}
+
 
 // ----------------------------------------------------------------------------
 // Using a method with a Self result carries the receiver type.

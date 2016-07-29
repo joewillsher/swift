@@ -105,17 +105,6 @@ ProtocolDecl *DeclContext::getAsProtocolExtensionContext() const {
            getAsGenericTypeOrGenericTypeExtensionContext());
 }
 
-NominalTypeDecl * DeclContext::getEnclosingNominalContext() const {
-  auto dc = this;
-  while (dc->isLocalContext())
-    dc = dc->getParent();
-  
-  if (auto nominal = dc->getAsNominalTypeOrNominalTypeExtensionContext())
-    return nominal;
-  
-  return nullptr;
-}
-
 GenericTypeParamDecl *DeclContext::getProtocolSelf() const {
   auto *proto = getAsProtocolOrProtocolExtensionContext();
   assert(proto && "not a protocol");

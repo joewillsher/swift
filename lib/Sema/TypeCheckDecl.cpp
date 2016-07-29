@@ -4509,7 +4509,7 @@ public:
       }
     }
 
-    // Dynamic 'Self' is only permitted on methods.
+    // FIXME: Dynamic 'Self' is currently only permitted on methods.
     if (!dc->isTypeContext()) {
       TC.diagnose(simpleRepr->getIdLoc(), diag::self_non_method,
                   dc->isLocalContext());
