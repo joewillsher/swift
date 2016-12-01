@@ -81,7 +81,7 @@ class C1 {
     var _: Int = self // expected-error{{cannot convert value of type 'Self.Type' to specified type 'Int'}}
 
     _ = Self(int: 5) as Self
-    _ = C1(int: 5) as Self // expected-warning{{'C1' is not convertible to 'Self'; did you mean to use 'as!' to force downcast?}}
+    _ = C1(int: 5) as Self // expected-warning{{'C1' is not convertible to 'Self'; did you mean to use 'as!' to force downcast?}} {{20-18=as!}}
 
     if b { return self.init(int: 5) }
 

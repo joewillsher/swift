@@ -4491,17 +4491,15 @@ public:
                                     optionalDepth + 1);
     }
 
-    // Check whether we have a simple identifier type.
-    auto simpleRepr = dyn_cast<SimpleIdentTypeRepr>(typeRepr);
-    if (!simpleRepr)
-      return false;
+    DeclContext *dc = func->getDeclContext();
 
+    auto simpleRepr = dyn_cast<SimpleIdentTypeRepr>(typeRepr);
+    // Check whether we have a simple identifier type.
     // Check whether it is 'Self'.
-    if (simpleRepr->getIdentifier() != TC.Context.Id_Self)
+    if (!simpleRepr || simpleRepr->getIdentifier() != TC.Context.Id_Self)
       return false;
 
     // 'Self' in protocol extensions is not dynamic 'Self'.
-    DeclContext *dc = func->getDeclContext();
     for (auto parentDC = dc; !parentDC->isModuleScopeContext();
          parentDC = parentDC->getParent()) {
       if (parentDC->getAsProtocolExtensionContext()) {
@@ -4509,23 +4507,23 @@ public:
       }
     }
 
-    // FIXME: Dynamic 'Self' is currently only permitted on methods.
-    if (!dc->isTypeContext()) {
-      TC.diagnose(simpleRepr->getIdLoc(), diag::self_non_method,
-                  dc->isLocalContext());
-      simpleRepr->setInvalid();
-      return true;
-    }
-
     // 'Self' is only a dynamic self on class methods and
     // protocol requirements.
-    auto declaredType = dc->getDeclaredTypeOfContext();
+    auto declaredType = dc->getInnermostTypeContext()->getDeclaredTypeOfContext();
     if (declaredType->is<ErrorType>())
       return false;
     auto nominal = declaredType->getAnyNominal();
 
     // 'Self' return types in classes or protocols are dynamic 'Self'
-    if (isa<ClassDecl>(nominal) || isa<ProtocolDecl>(nominal)) {
+    if (isa<ProtocolDecl>(nominal)) {
+      
+      if (!dc->isTypeContext()) {
+        TC.diagnose(simpleRepr->getIdLoc(), diag::self_non_method,
+                    dc->isLocalContext());
+        typeRepr->setInvalid();
+        return true;
+      }
+
       // Note that the function has a dynamic Self return type and set
       // the return type component to the dynamic self type.
       func->setDynamicSelf(true);

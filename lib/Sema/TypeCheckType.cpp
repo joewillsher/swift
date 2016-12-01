@@ -802,32 +802,33 @@ resolveTopLevelIdentTypeComponent(TypeChecker &TC, DeclContext *DC,
 
       return func->getDynamicSelf();
     }
-
-    bool hasError = true;
-    // Otherwise it is a concrete reference to the enclosing
-    // nominal type if we are in a type context.
-    if (auto typeContext = DC->getInnermostTypeContext())
-      if (auto nominal = typeContext->getAsNominalTypeOrNominalTypeExtensionContext()) {
-        // In protocols, 'Self' is always the 'Self' generic param,
-        // so don't resolve it here. In classes 'Self' is the
-        // dynamic self
-        if (nominal->getAsClassOrClassExtensionContext())
-          return DynamicSelfType::get(nominal->getSelfTypeInContext(), TC.Context);
-        else if (!nominal->getAsProtocolOrProtocolExtensionContext())
-          return resolveTypeDecl(TC, nominal, comp->getIdLoc(), DC,
-                                 dyn_cast<GenericIdentTypeRepr>(comp),
-                                 options, resolver, unsatisfiedDependency);
-        else
-          hasError = false;
-      }
-    
-    if (hasError) {
-      // Warn if 'Self' is referenced outside a nominal type context.
-      TC.diagnose(comp->getIdLoc(), diag::self_outside_nominal)
-        .highlight(comp->getSourceRange());
-      comp->setInvalid();
-      return ErrorType::get(TC.Context);
-    }
+//
+//    bool hasError = true;
+//    // Otherwise it is a concrete reference to the enclosing
+//    // nominal type if we are in a type context.
+//    if (auto typeContext = DC->getInnermostTypeContext())
+//      if (auto nominal = typeContext->getAsNominalTypeOrNominalTypeExtensionContext()) {
+//        auto selfType = resolveTypeDecl(TC, nominal, comp->getIdLoc(), DC,
+//                                        dyn_cast<GenericIdentTypeRepr>(comp),
+//                                        options, resolver, unsatisfiedDependency);
+//        // In protocols, 'Self' is always the 'Self' generic param,
+//        // so don't resolve it here. In classes 'Self' is the
+//        // dynamic self
+//        if (nominal->getAsClassOrClassExtensionContext())
+//          return DynamicSelfType::get(nominal->getSelfInterfaceType(), TC.Context);
+//        else if (!nominal->getAsProtocolOrProtocolExtensionContext())
+//          return selfType;
+//        else
+//          hasError = false;
+//      }
+//    
+//    if (hasError) {
+//      // Warn if 'Self' is referenced outside a nominal type context.
+//      TC.diagnose(comp->getIdLoc(), diag::self_outside_nominal)
+//        .highlight(comp->getSourceRange());
+//      comp->setInvalid();
+//      return ErrorType::get(TC.Context);
+//    }
   }
   
   // Resolve the first component, which is the only one that requires

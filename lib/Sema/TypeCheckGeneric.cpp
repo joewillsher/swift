@@ -453,8 +453,8 @@ static Type getResultType(TypeChecker &TC, FuncDecl *fn, Type resultType) {
     llvm_unreachable("bad optional kind");
   }
 
-  // Rewrite dynamic self to the appropriate interface type.
-  if (resultType->is<DynamicSelfType>()) {
+  // Rewrite dynamic self to the appropriate interface type if we are in a protocol
+  if (resultType->is<DynamicSelfType>() && fn->hasDynamicSelf()) {
     return fn->getDynamicSelfInterface();
   }
 

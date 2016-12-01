@@ -570,6 +570,39 @@ UnqualifiedLookup::UnqualifiedLookup(DeclName Name, DeclContext *DC,
           Results.push_back(UnqualifiedLookupResult(BaseDecl, Result));
         }
 
+        if (!FoundAny) {
+          if (Name.isSimpleName() && Name.getBaseName() == DC->getASTContext().Id_Self) {
+            
+            auto searchDC = DC;
+            
+            while (searchDC && !searchDC->isTypeContext()) {
+              
+              if (auto fnDC = dyn_cast<FuncDecl>(searchDC)) {
+                fnDC->setDynamicSelf(true);
+              }
+              
+              searchDC = searchDC->getParent();
+              if (searchDC->isModuleScopeContext())
+                searchDC = nullptr;
+            }
+            
+            if (searchDC) {
+            //if (auto typeContext = DC->getInnermostTypeContext())
+              if (auto nominal = searchDC
+                  ->getAsNominalTypeOrNominalTypeExtensionContext()) {
+                // In a class, 'Self' is the dynamic 'Self'
+//                if (nominal->getAsClassOrClassExtensionContext()) {
+//                  auto selfTy = DynamicSelfType::get(nominal->getSelfInterfaceType(), Context);
+//                } else {
+//                  
+//                }
+                
+                Results.push_back(UnqualifiedLookupResult(MetaBaseDecl, nominal));
+                FoundAny = true;
+              }
+          }
+        }
+        
         if (FoundAny) {
           // Predicate that determines whether a lookup result should
           // be unavailable except as a last-ditch effort.

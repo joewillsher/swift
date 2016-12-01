@@ -1426,12 +1426,10 @@ TypeConverter::getTypeLowering(AbstractionPattern origType,
       }
       
       CanType instanceType = substMeta.getInstanceType();
-      // If this is a DynamicSelf metatype, turn it into a metatype of the
-      // underlying self type.
       if (auto dynamicSelf = dyn_cast<DynamicSelfType>(instanceType)) {
         instanceType = dynamicSelf.getSelfType();
       }
-      
+
       // Regardless of thinness, metatypes are always trivial.
       auto thinnedTy = CanMetatypeType::get(instanceType, repr);
       loweredTy = SILType::getPrimitiveObjectType(thinnedTy);

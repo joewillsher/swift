@@ -4531,18 +4531,19 @@ void DestructorDecl::setSelfDecl(ParamDecl *selfDecl) {
 
 
 DynamicSelfType *FuncDecl::getDynamicSelf() const {
-  if (!hasDynamicSelf())
-    return nullptr;
+//  if (!hasDynamicSelf())
+//    return nullptr;
 
-  return DynamicSelfType::get(getDeclContext()->getSelfTypeInContext(),
+  auto context = getDeclContext()->getInnermostTypeContext();
+  return DynamicSelfType::get(context->getSelfTypeInContext(),
                               getASTContext());
 }
 
 DynamicSelfType *FuncDecl::getDynamicSelfInterface() const {
-  if (!hasDynamicSelf())
-    return nullptr;
-
-  return DynamicSelfType::get(getDeclContext()->getSelfInterfaceType(),
+//  if (!hasDynamicSelf())
+//    return nullptr;
+  auto context = getDeclContext()->getInnermostTypeContext();
+  return DynamicSelfType::get(context->getSelfInterfaceType(),
                               getASTContext());
 }
 

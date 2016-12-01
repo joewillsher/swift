@@ -92,7 +92,6 @@ class ErrantClass : ErrantBaseClass {
 
       // FIXME: not diagnosed
       something(self.dynamicType)
-      something(Self.self)
 
       throw e
     }

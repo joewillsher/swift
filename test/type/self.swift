@@ -84,6 +84,7 @@ class C2<T> {
   init(_ a: T) { self.a = a }
   
   func foo() {
+    _ = Self.self
     _ = Self.self as Self.Type
   }
   func bar() -> Self {
@@ -91,13 +92,19 @@ class C2<T> {
   }
   class func foo1() {
     _ = Self.self
-    _ = Self.self as Self
+    _ = Self.self as Self.Type
   }
-  class func foo2() -> Self<Int> {
+  class func foo2() -> Self<Int> { // expected-error{{dynamic 'Self' return type cannot have generic parameters}} {{27-36=Self}}
     _ = Self.self
-    _ = Self.self as Self
-    return Self(1)
+    _ = Self.self as Self.Type
+    return Self(1) // expected-error{{'Int' is not convertible to 'T'}}
   }
 }
 
-
+struct S2<T> {
+  static func foo2() -> Self<Int> {
+    _ = Self.self
+    _ = Self.self as Self.Type
+    return Self(1)
+  }
+}
